@@ -1,5 +1,6 @@
 package practicaltest01var04.eim.systems.cs.pub.ro.practicaltest01var04;
 
+import android.app.SearchManager;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -9,38 +10,42 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import java.util.Random;
+
+public class PracticalTest01Var03ChooseNumber extends ActionBarActivity implements View.OnClickListener{
+    private final static int SECONDARY_ACTIVITY_REQUEST_CODE = 2016;
+    private EditText numberField ;
+    private Button playButton;
 
 
-public class PracticalTest01Var03ChooseNumber extends ActionBarActivity implements View.OnClickListener {
-    private EditText scoreField = null;
-    private EditText guessField = null;
-    private Button backButton = null;
-    private Button generateButton = null;
-    private Button checkButton = null;
+    @Override
+    public void onClick(View v) {
+        switch(v.getId()) {
+            case R.id.playButton:
+
+                try{
+
+                    Intent intent = new Intent(getApplicationContext(), PracticalTest01Var02PlayActivity.class);
+                    int enteredNumber = Integer.parseInt(numberField.getText().toString());
+                    intent.putExtra("enteredNumber", enteredNumber);
+                    startActivityForResult(intent, SECONDARY_ACTIVITY_REQUEST_CODE);
+                }catch(NumberFormatException e){
+
+                }
+                break;
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_practical_test01_var03_choose_number);
 
-        scoreField = (EditText)findViewById(R.id.scoreField);
-        guessField = (EditText)findViewById(R.id.guessField);
-
-        backButton = (Button)findViewById(R.id.backButton);
-        generateButton = (Button)findViewById(R.id.generateNumberButton);
-        checkButton = (Button)findViewById(R.id.checkNumberButton);
-        backButton.setOnClickListener(this);
-        generateButton.setOnClickListener(this);
-        checkButton.setOnClickListener(this);
+        numberField = (EditText)findViewById(R.id.numberField);
+        playButton = (Button)findViewById(R.id.playButton);
+        playButton.setOnClickListener(this);
 
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_practical_test01_var03_choose_number, menu);
-        return true;
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -55,39 +60,5 @@ public class PracticalTest01Var03ChooseNumber extends ActionBarActivity implemen
         }
 
         return super.onOptionsItemSelected(item);
-    }
-    Thread changeValue = new Thread() {
-
-        @Override
-        public void run() {
-            try {
-                while (!isInterrupted()) {
-                    Thread.sleep(2000);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            // update TextView here!
-                            scoreField.setText("");
-                        }
-                    });
-                }
-            } catch (InterruptedException e) {
-            }
-        }
-    };
-
-
-    @Override
-    public void onClick(View v) {
-        switch(v.getId()) {
-            case R.id.generateNumberButton:
-                Random rand = new Random();
-                int randomNum = rand.nextInt(9 - 0 + 1) + 0;
-                scoreField.setText(String.valueOf(randomNum));
-                if (changeValue.isAlive())
-                    changeValue.stop();
-                changeValue.start();
-                break;
-        }
     }
 }
